@@ -104,6 +104,10 @@ public class XLiMeKafkaMessageProcessor implements KafkaMessageAndMetadataProces
 		switch(topic) {
 		case socialmedia: return new RDFMessageParser(Lang.TRIG, buildDatasetProcessor(topicName));
 		case zattoo_epg: return new RDFMessageParser(Lang.TRIG, buildDatasetProcessor(topicName));
+		case jsi_newsfeed: return new RDFMessageParser(Lang.TRIG, buildDatasetProcessor(topicName));
+		case tv_ocr: return new RDFMessageParser(Lang.TRIG, buildDatasetProcessor(topicName));
+		case zattoo_asr: return new RDFMessageParser(Lang.TRIG, buildDatasetProcessor(topicName));
+		case zattoo_sub: return new RDFMessageParser(Lang.TRIG, buildDatasetProcessor(topicName));
 		default: return null;
 		}
 	}

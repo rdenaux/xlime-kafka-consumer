@@ -4,6 +4,9 @@ public enum XLiMeKafkaTopic {
 
 	socialmedia,
 	jsi_newsfeed,
+	zattoo_asr,
+	tv_ocr,
+	zattoo_sub,
 	zattoo_epg;
 	
 	public static XLiMeKafkaTopic fromTopicName(String topicName) {
