@@ -1,3 +1,7 @@
 /target
 /etc/
 /logs/
+/bin/
+/.settings/
+/tryvisual.trig
+/.classpath
