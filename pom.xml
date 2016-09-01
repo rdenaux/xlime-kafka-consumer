@@ -4,7 +4,7 @@
 	<groupId>eu.xlime</groupId>
 	<artifactId>kafka-consumer</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
-	<name>Kafka Consumer</name>
+	<name>xLiMe Kafka Consumer</name>
 	<description>Consume xLiMe messages posted to Kafka by the various xLiMe partners and process them. Example processing can be:
 1. monitoring of how many messages are posted
 2. converting to another format (e.g. JSONLD to push into document DB)

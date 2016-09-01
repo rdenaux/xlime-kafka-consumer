@@ -10,10 +10,20 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 
+/**
+ * Main launcher class for xLiMe Kafka consumers.
+ *  
+ * @author rdenaux
+ *
+ */
 public class RunExtractor {
 
 	private static final Logger log = LoggerFactory.getLogger(RunExtractor.class);
 	
+	/**
+	 * Execute one or more xLiMe Kafka consumers based on an <i>xLiMe kafka consumer properties</i> configuration file.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.out.println("Usage: RunExtractor [pathToProps]");

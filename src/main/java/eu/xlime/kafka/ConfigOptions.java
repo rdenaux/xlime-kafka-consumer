@@ -60,15 +60,7 @@ public enum ConfigOptions {
 	XLIME_KAFKA_CONSUMER_TOPIC_RDF_DATASET_PROCESSOR_SUMMARISE_EVERY(
 			"xlime.kafka.consumer.topic.rdf.dataset-processor.summarise-every",
 			"Indicate that DataProcessors should log a summary of their processing every n messages. Default is 500. A negative number indicates that no summary should be logged.",
-			"500", Long.class),
-	XLIME_MONGO_CONNECTION_STRING(//
-			"xlime.mongo.connection.string",
-			"A connection uri for connecting to a MongoDB instance or cluster. Default is 'mongodb://localhost:27017'",
-			"mongodb://localhost:27017", String.class), 
-	XLIME_MONGO_RESOURCE_DATABASE_NAME(//
-			"xlime.mongo.resource.database.name",
-			"The name for the database used to store xlime resources. Default is 'xlimeres'",
-			"xlimeres", String.class)
+			"500", Long.class)
 	;
 	
 	final String key;
