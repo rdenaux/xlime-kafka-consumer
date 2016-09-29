@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableMap;
 import eu.xlime.kafka.msgproc.DatasetProcessor;
 import eu.xlime.kafka.msgproc.DatasetProcessorFactory;
 import eu.xlime.kafka.msgproc.RDFMessageParser;
-import eu.xlime.kafka.rdf.JsonLDStorer;
 
 /**
  * {@link KafkaMessageAndMetadataProcessor} which delegates the processing to one of the 
