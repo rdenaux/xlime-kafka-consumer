@@ -11,6 +11,7 @@
 2. parsing and pushing into a triplestore</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<build>
@@ -19,8 +20,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source />
-					<target />
+					<source>1.7</source>
+                	<target>1.7</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -63,4 +64,25 @@
 			<version>19.0</version>
 		</dependency>
 	</dependencies>
+	<organization>
+  		<name>Expert System Iberia</name>
+  		<url>http://www.expertsystem.com/office/expert-system-iberia/</url>
+  	</organization>
+	<developers>
+  		<developer>
+  			<name>Ronald Denaux</name>
+  			<email>rdenaux@expertsystem.com</email>
+  		</developer>
+	</developers>
+  	<scm>
+  		<connection>scm:git:git@github.com:rdenaux/xlime-kafka-consumer.git</connection>
+		<url>scm:git:git@github.com:rdenaux/xlime-kafka-consumer.git</url>
+		<developerConnection>scm:git:git@github.com:rdenaux/xlime-kafka-consumer.git</developerConnection>
+  	</scm>
+
+  	<issueManagement>
+		<url>https://github.com/rdenaux/xlime-kafka-consumer/issues</url>
+		<system>GitHub Issues</system>  
+  	</issueManagement>
+	
 </project>
