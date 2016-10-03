@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.xlime</groupId>
 	<artifactId>kafka-consumer</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>xLiMe Kafka Consumer</name>
 	<description>Consume xLiMe messages posted to Kafka by the various xLiMe partners and process them. Example processing can be:
 1. monitoring of how many messages are posted
