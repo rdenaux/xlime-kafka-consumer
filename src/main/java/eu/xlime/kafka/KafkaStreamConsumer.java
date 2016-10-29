@@ -42,7 +42,12 @@ public class KafkaStreamConsumer implements Runnable {
 	}
 
 	public void run() {
-		log.info("KafkaStreamConsumer.run()");
+		log.info(String.format("%s for %s_%s", "KafkaStreamConsumer.run()", kafkaTopic, threadNumber));
+		try {
+			Thread.currentThread().setName(String.format("kafka-stream-%s-consumer-%s", kafkaTopic, threadNumber));
+		} catch (Exception e) {
+			log.warn("Failed to rename thread by " + getClass().getSimpleName());
+		}
 
 		ConsumerIterator<byte[], byte[]> it = stream.iterator();
 		long countConsumed = 0;

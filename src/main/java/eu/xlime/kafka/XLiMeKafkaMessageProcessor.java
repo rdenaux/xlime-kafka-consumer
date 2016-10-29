@@ -72,10 +72,14 @@ public class XLiMeKafkaMessageProcessor implements KafkaMessageAndMetadataProces
 	}
 
 	private void tryLogMessage(MessageAndMetadata<byte[], byte[]> mm) {
-		log.info(String.format("processing topic=%s, partition=%s, offset=%s", mm.topic(), mm.partition(), mm.offset()));
+		if (log.isTraceEnabled()) {
+			log.trace(String.format("processing topic=%s, partition=%s, offset=%s", mm.topic(), mm.partition(), mm.offset()));
+		}
 		try {
 			final byte[] bytes = mm.message();
-			log.info("message size (bytes): " + bytes.length);
+			if (log.isTraceEnabled()) {
+				log.trace("message size (bytes): " + bytes.length);
+			}
 			if (log.isTraceEnabled()) { 
 				String message = new String(bytes, StandardCharsets.UTF_8);
 				log.trace(message); 

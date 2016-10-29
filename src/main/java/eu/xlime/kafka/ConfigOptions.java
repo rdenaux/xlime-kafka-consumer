@@ -7,6 +7,16 @@ import java.util.Properties;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Defines configuration options for the kafka-consumers. 
+ * 
+ * Typically, you will defined these in a <i>properties</i> file and pass those properties to 
+ * an executor such as the {@link RunExtractor}. Which will use the configuration values to
+ * connect to Kafka, launch stream consumers and other timed tasks.
+ * 
+ * @author rdenaux
+ *
+ */
 public enum ConfigOptions {
 
 	XLIME_KAFKA_CONSUMER_ZOOKEEPER_CONNECT(//
@@ -57,10 +67,30 @@ public enum ConfigOptions {
 			"xlime.kafka.consumer.topic.%s.rdf.dataset-processor.fqn",
 			"Fully qualified name of the class implementing the DatasetProcessor interface that will process the RDF message.",
 			null, String.class),
-	XLIME_KAFKA_CONSUMER_TOPIC_RDF_DATASET_PROCESSOR_SUMMARISE_EVERY(
-			"xlime.kafka.consumer.topic.rdf.dataset-processor.summarise-every",
-			"Indicate that DataProcessors should log a summary of their processing every n messages. Default is 500. A negative number indicates that no summary should be logged.",
-			"500", Long.class)
+	XLIME_KAFKA_CONSUMER_TOPIC_RDF_DATASET_PROCESSOR_SUMMARISE_EVERY_N_MESSAGES(
+			"xlime.kafka.consumer.topic.rdf.dataset-processor.summarise-every-n-messages",
+			"Indicate that DataProcessors should log (and output?) a summary of their processing every n messages. Default is 500. A negative number indicates that no summary should be logged.",
+			"500", Long.class),
+	XLIME_KAFKA_CONSUMER_TOPIC_RDF_DATASET_PROCESSOR_SUMMARISE_EVERY_N_MINUTES(
+			"xlime.kafka.consumer.topic.rdf.dataset-processor.summarise-every-n-minutes",
+			"Indicate that DataProcessors should log (and output?) a summary of their processing at least every n minutes. Default is 10. This is useful for low-volume (or empty) topics, where logging evern N messages does not produce any messages.",
+			"500", Long.class),
+	XLIME_EXTRACTION_SIDE_TASKS(//
+			"xlime.extraction.side-tasks",
+			"Comma separated list of sides tasks to execute. These are generic timed tasks, that will be executed besides the kafka topic consumers.",
+			"", List.class),
+	XLIME_EXTRACTION_SIDE_TASK_FQN(//
+			"xlime.extraction.side-task.%s.fqn",
+			"Fully qualified name of the class implementing the TimedTask interface that will performe the timed side task.",
+			null, String.class),
+	XLIME_EXTRACTION_SIDE_TASK_INITIAL_DELAY_SECONDS(//
+			"xlime.extraction.side-task.%s.initial-delay-seconds",
+			"Time to wait in seconds before executing the timed task for the first time. By default 5 minutes.",
+			"300", Long.class),
+	XLIME_EXTRACTION_SIDE_TASK_INTERVAL_SECONDS(//
+			"xlime.extraction.side-task.%s.interval-seconds",
+			"Time to wait between executions of the side time task in seconds. By default 15 minutes.",
+			"900", Long.class)
 	;
 	
 	final String key;

@@ -28,7 +28,7 @@ import kafka.message.MessageAndOffset;
  */
 public class KafkaSimpleConsumer {
 	/**
-	 * Tries to read the last 10 messages from a topic using a particular partition, 
+	 * Tries to read the last <code>maxReads</code> messages from a <code>topic</code> using a particular <code>partition</code>, 
 	 * although it only reads at most 'maxRead' times.  
 	 * @param args
 	 */

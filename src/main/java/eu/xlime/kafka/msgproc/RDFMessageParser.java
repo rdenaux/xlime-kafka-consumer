@@ -84,7 +84,9 @@ public class RDFMessageParser implements KafkaMessageParser<Dataset> {
 			dataset.close();
 			return Optional.absent();
 		}
-		log.info(summariseNamedGraphs(dataset));
+		if (log.isTraceEnabled()) {
+			log.trace(summariseNamedGraphs(dataset));
+		}
 		return Optional.of(dataset);
 	}
 

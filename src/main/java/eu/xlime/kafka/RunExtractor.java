@@ -37,6 +37,8 @@ public class RunExtractor {
         log.info("Launching consumers ");
         consumerLauncher.launchStreamConsumers();
         scheduleConsumerMonitor(consumerLauncher);
+        log.info("Launching side tasks");
+        consumerLauncher.launchSideTasks();
         
     	Runtime.getRuntime().addShutdownHook(new ConsumerLauncherShutdownThread(consumerLauncher));// register clean shutdown hook
 

@@ -1,9 +1,5 @@
 package eu.xlime.kafka;
 
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.KafkaStream;
-import kafka.javaapi.consumer.ConsumerConnector;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,11 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
+import kafka.consumer.ConsumerConfig;
+import kafka.consumer.KafkaStream;
+import kafka.javaapi.consumer.ConsumerConnector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import eu.xlime.kafka.side.SideTask;
+import eu.xlime.kafka.side.SideTaskFactory;
  
 /**
  * Provides a way to launch (and request shutdown) of {@link KafkaStreamConsumer}s 
@@ -35,8 +40,16 @@ public class KafkaStreamConsumerLauncher {
 	
 	private final ConsumerConnector consumer;
 	
+	/**
+	 * Executor for executing kafka consumers 
+	 */
     private ExecutorService executor;
+    /**
+     * Timer for executing 'side' {@link TimerTask}s.
+     */
+    private Timer timer;
     private final Map<String, List<Future<?>>> launchedTopicStreamConsumers;
+    private final Map<String, SideTask> sideTasks;
     private final Properties cfgProps;
     private Map<String, Integer> topicCountMap;
     private Map<String, List<KafkaStream<byte[], byte[]>>> topicsToStreams;
@@ -47,9 +60,30 @@ public class KafkaStreamConsumerLauncher {
                 createConsumerConfig(cfgProps));
         topicCountMap = calcTopicCountMap();
         launchedTopicStreamConsumers = new HashMap<String, List<Future<?>>>();
+        sideTasks = loadSideTasks();
     }
  
-    private Map<String, Integer> calcTopicCountMap() {
+    private Map<String, SideTask> loadSideTasks() {
+    	List<String> names = ConfigOptions.XLIME_EXTRACTION_SIDE_TASKS.getList(cfgProps);
+    	log.info("Loading timed side tasks " + names);
+    	Map<String, SideTask> result = new HashMap<>();
+    	for (String n: names) {
+    		result.put(n, buildSideTask(n));
+    	}
+        return result;
+	}
+
+	private SideTask buildSideTask(String name) {
+		SideTaskFactory factory = new SideTaskFactory(getClass().getClassLoader());
+		ConfigOptions opt = ConfigOptions.XLIME_EXTRACTION_SIDE_TASK_FQN;
+		Optional<String> optFQN = opt.getOptVal(cfgProps, name);
+		if (!optFQN.isPresent()) throw new RuntimeException("You must specify a configuration option " + opt.getKey(name));
+		Optional<SideTask> optDSP = factory.createInstance(optFQN.get(), cfgProps);
+		if (!optDSP.isPresent()) throw new RuntimeException("Failed to create a DatasetProcessor for " + optFQN + ". Check logs and configuration.");
+		return optDSP.get();
+	}	
+    
+	private Map<String, Integer> calcTopicCountMap() {
         List<String> topics = ConfigOptions.XLIME_KAFKA_CONSUMER_TOPICS.getList(cfgProps);
         log.info("Readying to launch consumers for topics " + topics);
         Map<String, Integer> result = new HashMap<String, Integer>();
@@ -151,6 +185,13 @@ public class KafkaStreamConsumerLauncher {
 				log.error("Error waiting for executor", e);
 			}
     	}
+    	if (timer != null) {
+    		try {
+    			timer.cancel();
+    		} catch (Exception e) {
+    			log.error("Error cancelling timer", e);
+    		}
+    	}
 		log.info("Shutdown Kafka consumer connector");
     }
  
@@ -183,6 +224,22 @@ public class KafkaStreamConsumerLauncher {
         	}
     		launchedTopicStreamConsumers.put(topic, launchedFutures);
         }
+    }
+    
+    public void launchSideTasks() {
+    	if (timer != null) {
+    		log.warn("Side tasks already launched");
+    		return;
+    	}
+    	timer = new Timer();
+    	
+    	for (String name: sideTasks.keySet()) {
+    		TimerTask task = sideTasks.get(name);
+    		long delay = ConfigOptions.XLIME_EXTRACTION_SIDE_TASK_INITIAL_DELAY_SECONDS.getOptLongVal(cfgProps, name).get() * 1000L;
+    		long period = ConfigOptions.XLIME_EXTRACTION_SIDE_TASK_INTERVAL_SECONDS.getOptLongVal(cfgProps, name).get() * 1000L;
+    		log.info(String.format("Scheduling side task %s", name));
+        	timer.schedule(task, delay, period);
+    	}
     }
 
 	private int totalThreads() {
